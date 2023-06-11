@@ -20,8 +20,12 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = function getArea() {
+    return this.width * this.height;
+  };
 }
 
 
@@ -35,8 +39,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 
@@ -51,8 +55,9 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const values = Object.values(JSON.parse(json));
+  return new proto.constructor(...values);
 }
 
 
@@ -111,32 +116,69 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  getThrow() {
+    throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    const selectors = this.selectors || {};
+    selectors.element = value;
+    return { ...this, element: this.getThrow, selectors };
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const selectors = this.selectors || {};
+    selectors.id = `#${value}`;
+    return { ...this, id: this.getThrow, selectors };
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const selectors = this.selectors || { class: [] };
+    const resultValue = `.${value}`;
+    if (selectors.class) {
+      selectors.class.push(resultValue);
+    } else {
+      selectors.class = [resultValue];
+    }
+    return { ...this, selectors };
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const selectors = this.selectors || { attr: [] };
+    const resultValue = `[${value}]`;
+    if (selectors.attr) {
+      selectors.attr.push(resultValue);
+    } else {
+      selectors.attr = [resultValue];
+    }
+    return { ...this, selectors };
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const selectors = this.selectors || { pseudoClass: [] };
+    const resultValue = `:${value}`;
+    if (selectors.pseudoClass) {
+      selectors.pseudoClass.push(resultValue);
+    } else {
+      selectors.pseudoClass = [resultValue];
+    }
+    return { ...this, selectors };
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const selectors = this.selectors || {};
+    selectors.pseudoElement = `::${value}`;
+    return { ...this, pseudoElement: this.getThrow, selectors };
+  },
+
+  combine(selector1, combinator, selector2) {
+    return { ...this, value: `${selector1.stringify()} ${combinator} ${selector2.stringify()}` };
+  },
+  stringify() {
+    const {
+      element = '', id = '', class: cl = [], attr = [], pseudoClass = [], pseudoElement = '',
+    } = this.selectors;
+    return element + id + cl.join('') + attr.join('') + pseudoClass.join('') + pseudoElement;
   },
 };
 

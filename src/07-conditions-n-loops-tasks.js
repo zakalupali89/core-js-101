@@ -27,8 +27,19 @@
  *  21 => 'Fizz'
  *
  */
-function getFizzBuzz(/* num */) {
-  throw new Error('Not implemented');
+function getFizzBuzz(num) {
+  if (!(num % 3) && !(num % 5)) {
+    return 'FizzBuzz';
+  }
+
+  if (!(num % 3)) {
+    return 'Fizz';
+  }
+
+  if (!(num % 5)) {
+    return 'Buzz';
+  }
+  return num;
 }
 
 
@@ -43,8 +54,8 @@ function getFizzBuzz(/* num */) {
  *   5  => 120
  *   10 => 3628800
  */
-function getFactorial(/* n */) {
-  throw new Error('Not implemented');
+function getFactorial(n) {
+  return Array.from({ length: n }, (v, i) => i + 1).reduce((prev, next) => prev * next);
 }
 
 
@@ -60,8 +71,8 @@ function getFactorial(/* n */) {
  *   5,10  =>  45 ( = 5+6+7+8+9+10 )
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
-function getSumBetweenNumbers(/* n1, n2 */) {
-  throw new Error('Not implemented');
+function getSumBetweenNumbers(n1, n2) {
+  return Array.from({ length: n2 - n1 + 1 }, (v, i) => i + n1).reduce((prev, next) => prev + next);
 }
 
 
@@ -72,7 +83,7 @@ function getSumBetweenNumbers(/* n1, n2 */) {
  * @param {number} a
  * @param {number} b
  * @param {number} c
- * @return {bool}
+ * @return {boolean}
  *
  * @example:
  *   1,2,3    =>  false
@@ -80,8 +91,8 @@ function getSumBetweenNumbers(/* n1, n2 */) {
  *   10,1,1   =>  false
  *   10,10,10 =>  true
  */
-function isTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isTriangle(a, b, c) {
+  return (a + b > c) && (b + c > a) && (a + c > b);
 }
 
 
@@ -107,7 +118,7 @@ function isTriangle(/* a, b, c */) {
  *
  * @param {object} rect1
  * @param {object} rect2
- * @return {bool}
+ * @return {boolean}
  *
  * @example:
  *   { top: 0, left: 0, width: 10, height: 10 },
@@ -117,8 +128,11 @@ function isTriangle(/* a, b, c */) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  return !(rect1.top > (rect2.top + rect2.height)
+    || (rect1.top + rect1.height) < rect2.top
+    || (rect1.left + rect1.width) < rect2.left
+    || rect1.left > (rect2.left + rect2.width));
 }
 
 
@@ -141,15 +155,17 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *
  * @param {object} circle
  * @param {object} point
- * @return {bool}
+ * @return {boolean}
  *
  * @example:
  *   { center: { x:0, y:0 }, radius:10 },  { x:0, y:0 }     => true
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  return Math.sqrt(
+    (circle.center.x - point.x) ** 2 + (circle.center.y - point.y) ** 2,
+  ) < circle.radius;
 }
 
 
@@ -164,8 +180,17 @@ function isInsideCircle(/* circle, point */) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  const arr = str.split('');
+  for (let i = 0; i < (arr.length - 1); i += 1) {
+    const char = arr[i];
+    const copyArr = [...arr];
+    copyArr.splice(i, 1);
+    if (!copyArr.includes(char)) {
+      return char;
+    }
+  }
+  return null;
 }
 
 
@@ -178,8 +203,8 @@ function findFirstSingleChar(/* str */) {
  *
  * @param {number} a
  * @param {number} b
- * @param {bool} isStartIncluded
- * @param {bool} isEndIncluded
+ * @param {boolean} isStartIncluded
+ * @param {boolean} isEndIncluded
  * @return {string}
  *
  * @example
@@ -191,8 +216,17 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  let min;
+  let max;
+  if (a < b) {
+    min = a;
+    max = b;
+  } else {
+    min = b;
+    max = a;
+  }
+  return `${isStartIncluded ? '[' : '('}${min}, ${max}${isEndIncluded ? ']' : ')'}`;
 }
 
 
@@ -208,8 +242,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -225,8 +259,8 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  return +num.toString().split('').reverse().join('');
 }
 
 
@@ -250,8 +284,23 @@ function reverseInteger(/* num */) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const arr = ccn.toString()
+    .split('')
+    .map((x) => parseInt(x, 10));
+  let controlSum;
+  const isNoneLength = arr.length % 2;
+  if (isNoneLength) {
+    [controlSum] = arr.splice(-1, 1);
+  }
+  const sum = arr.reduce(
+    (acc, val, i) => (i % 2 === 0 ? acc + val : acc + (val * 2).toString().split('').map((value) => parseInt(value, 10)).reduce((prev, next) => prev + next)),
+  );
+  if (!isNoneLength) {
+    controlSum = 10 - (sum % 10);
+    controlSum = controlSum === 10 ? 0 : controlSum;
+  }
+  return !((sum + controlSum) % 10);
 }
 
 /**
@@ -268,8 +317,13 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  return num.toString()
+    .split('')
+    .reduce((prev, next) => +prev + +next)
+    .toString()
+    .split('')
+    .reduce((prev, next) => +prev + +next);
 }
 
 
@@ -294,8 +348,13 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  for (let i = 0; i < str.length / 2; i += 1) {
+    if (str[i].codePointAt(0) !== str.at(-(i + 1)).codePointAt(0) - 2) {
+      return false;
+    }
+  }
+  return true;
 }
 
 
