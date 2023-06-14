@@ -111,7 +111,8 @@ async function chainPromises(array, action) {
       result.push(promiseValue);
     }
   }
-  return result.reduce((prev, next) => action(prev + next));
+
+  return result.reduce((prev, next) => action(prev, next));
 }
 
 module.exports = {

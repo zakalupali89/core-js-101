@@ -349,12 +349,26 @@ function getDigitalRoot(num) {
  *   '{[(<{[]}>)]}' = true
  */
 function isBracketsBalanced(str) {
-  for (let i = 0; i < str.length / 2; i += 1) {
-    if (str[i].codePointAt(0) !== str.at(-(i + 1)).codePointAt(0) - 2) {
-      return false;
-    }
+  if (!str) {
+    return true;
   }
-  return true;
+  const openBrackets = ['(', '[', '{', '<'];
+  const closeBrackets = [')', ']', '}', '>'];
+  return !str.split('').reduce((result, next) => {
+    const lastValue = result.at(-1);
+    const indexOf = openBrackets.indexOf(lastValue);
+    if (!lastValue || indexOf === -1) {
+      result.push(next);
+      return result;
+    }
+
+    if (openBrackets.indexOf(lastValue) === closeBrackets.indexOf(next)) {
+      result.pop();
+    } else {
+      result.push(next);
+    }
+    return result;
+  }, []).length;
 }
 
 
@@ -378,8 +392,8 @@ function isBracketsBalanced(str) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -395,8 +409,17 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const arr = pathes.map((value) => value.split('/'));
+  const pathWithMinLength = arr.sort((a, b) => a.length - b.length)[0];
+  for (let i = 0; i < pathWithMinLength.length; i += 1) {
+    const testArr = arr.map((value) => value[i]);
+    if (new Set(testArr).size !== 1) {
+      const resultArr = pathWithMinLength.slice(0, i);
+      return resultArr.length ? `${pathWithMinLength.slice(0, i).join('/')}/` : '';
+    }
+  }
+  return `/${pathWithMinLength.join('/')}`;
 }
 
 
@@ -453,8 +476,32 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const result = position.find(
+    (value) => value.length === 3 && new Set(value).size === 1 && !!value[0],
+  );
+  if (result) {
+    return result[0];
+  }
+  let isWin;
+  for (let i = 0; i < 3; i += 1) {
+    isWin = new Set(position.map((value) => value[i])).size === 1 && !!position[0][i];
+    if (isWin) {
+      return position[0][i];
+    }
+  }
+
+  isWin = new Set(position.map((value, i) => value[i])).size === 1 && !!position[0][0];
+  if (isWin) {
+    return position[0][0];
+  }
+
+  isWin = new Set(position.map((value, i) => value.at(-(i + 1)))).size === 1
+    && !!position.at(-1)[0];
+  if (isWin) {
+    return position[0].at(-1);
+  }
+  return undefined;
 }
 
 
